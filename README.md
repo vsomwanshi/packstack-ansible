@@ -1,4 +1,4 @@
-# Additional information
+## Additional information
 # OS_Family: RedHat
 1.1 Hardware requirements :
 
@@ -15,7 +15,7 @@
 	▪	rhel-8-for-x86_64-baseos-rpms
 	▪	rhel-8-for-x86_64-supplementary-rpms        
 
-# Packstack ( devstack ) installation using ansible
+## Packstack ( devstack ) installation using ansible
 
 1. Clone repository with below command on your ansible server.
 
@@ -64,7 +64,7 @@
     https://www.rdoproject.org/networking/floating-ip-range/
 
 
-# Reference:
+## Reference:
 
 https://docs.openstack.org/install-guide/environment-packages-rdo.html
 https://www.rdoproject.org/install/packstack/
