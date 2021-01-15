@@ -1,0 +1,48 @@
+---
+- hosts: all
+  vars_files:
+  - env_variables
+  tasks:
+  - name: collect the logs for current os release and kernel packages
+    shell: |
+      cat /etc/redhat-release
+      uname -a
+    register: bef_update
+
+  - debug:
+      msg: "{{ bef_update.stdout_lines }}"
+
+  - name: upgrade all packages to latest version
+    yum: 
+      name: '*'
+      state: latest
+    register: result
+
+  - debug:
+      msg: "{{ result }}"
+
+  - name: Reboot the server
+    tags: reboot
+    become: yes
+    become_user: root
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+
+  - name: Wait for the reboot and reconnect
+    wait_for:
+      port: 22
+      host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+      search_regex: OpenSSH
+      delay: 10
+      timeout: 300
+    connection: local
+
+  - name: collect the logs post os update for os release and kernel packages
+    shell: |
+      cat /etc/redhat-release
+      uname -a
+    register: post_update
+
+  - debug:
+      msg: "{{ post_update.stdout_lines }}"

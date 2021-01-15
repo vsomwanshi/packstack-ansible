@@ -1,0 +1,36 @@
+---
+- hosts: all
+  vars_files:
+  - env_variables
+  tasks:
+  - name: Install the latest version of network-scripts packages
+    yum: 
+      name: network-scripts
+      state: latest
+    register: result
+  
+  - debug:
+      msg: "{{ result }}"
+
+  - name: Stop network services
+    service:
+      name: "{{ item }}"
+      state: stopped
+    with_items:
+      - firewalld
+      - NetworkManager
+
+  - name: disable services
+    shell: |
+      systemctl disable firewalld.service
+      systemctl disable NetworkManager.service
+
+  - name: Start network service
+    service:
+      name: "{{ item }}"
+      state: started
+    with_items:
+      - network
+
+  - name: enable network service
+    shell: systemctl enable network.service

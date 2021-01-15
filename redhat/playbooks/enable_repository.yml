@@ -1,0 +1,27 @@
+---
+- hosts: all
+  vars_files:
+  - env_variables
+  tasks:
+  - name: enable repository when OS family is RHEL7
+    shell: |
+      yum install -y https://www.rdoproject.org/repos/rdo-release.rpm
+      subscription-manager repos --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-rh-common-rpms 
+    when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "7"
+
+  - name: enable repos when OS family is RHEL8
+    shell: |
+      dnf install -y https://www.rdoproject.org/repos/rdo-release.el8.rpm
+      subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms --enable=rhel-8-for-x86_64-supplementary-rpms --enable codeready-builder-for-rhel-8-x86_64-rpms
+    when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
+          
+  - name: clean all the medatat and repos
+    shell: |
+      yum clean all
+      yum repolist
+    register: repos_status
+
+  - debug: 
+      msg:
+        - "Metadata cache cleaned successfully and enabled repos"
+        - "{{ repos_status.stdout_lines }}"
