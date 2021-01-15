@@ -1,4 +1,3 @@
-# packstack ( devstack ) installation using ansible
 # Additional information
 # OS_Family: RedHat
 1.1 Hardware requirements :
@@ -15,3 +14,6 @@
 	▪	rhel-8-for-x86_64-appstream-rpms
 	▪	rhel-8-for-x86_64-baseos-rpms
 	▪	rhel-8-for-x86_64-supplementary-rpms        
+
+# Packstack ( devstack ) installation using ansible
+
