@@ -1,6 +1,6 @@
 # packstack ( devstack ) installation using ansible
-# Additional information **
-# OS_Family == RedHat **
+# Additional information
+# OS_Family: RedHat
 1.1 Hardware requirements :
 	▪	RAM 16GB
 	▪	CPU 4
