@@ -1,0 +1,44 @@
+---
+- hosts: all
+  vars_files:
+  - env_variables
+  tasks:
+  - name: Install openstack client when OS Family is centos7
+    yum:
+      name: python-openstackclient
+      state: latest
+    when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7"
+
+  - name: Install openstack client when OS Family is centos8
+    yum:
+      name: ['python3-openstackclient', 'openstack-selinux']
+      state: latest
+    when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8"
+
+  - name: Install packstack installer to proceed for installation when OS Family is centos7
+    shell: yum install -y openstack-packstack
+    when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7"
+
+  - name: Install packstack installer to proceed for installation when OS Family is centos8
+    shell: dnf install -y openstack-packstack
+    when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8"
+
+  - name: Install packstack all in one
+    shell: packstack --allinone --provision-demo=n --os-neutron-ovs-bridge-mappings=extnet:br-ex --os-neutron-ovs-bridge-interfaces=br-ex:eth0 --os-neutron-ml2-type-drivers=vxlan,flat --os-heat-install=y
+    register: installation
+
+  - debug:
+      msg: "{{ installation.stdout_lines }}"
+
+  - name: validate keystonerc_admin file
+    shell: ls -lrt /root/keystonerc_admin |wc -l
+    register: count 
+
+  - name: read keystonerc_admin file
+    shell: cat /root/keystonerc_admin |egrep -i "username|password"
+    register: keystonerc_admin
+    when: count.stdout != 0
+
+  - debug:
+      msg: "{{ keystonerc_admin.stdout_lines }}"
+    when: keystonerc_admin.stdout != 0

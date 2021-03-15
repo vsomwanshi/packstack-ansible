@@ -1,0 +1,26 @@
+---
+- hosts: all
+  vars_files:
+  - env_variables
+  tasks:
+  - name: enable repository when OS family is centos8 and installed required package
+    shell: |
+      sudo yum install -y centos-release-openstack-train
+    when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7"
+
+  - name: enable repository when OS family is centos8
+    shell: |
+      sudo dnf config-manager --enable powertools
+      sudo dnf install -y centos-release-openstack-victoria
+    when: ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8"
+
+  - name: clean all the medatat and repos
+    shell: |
+      yum clean all
+      yum repolist
+    register: repos_status
+
+  - debug: 
+      msg:
+        - "Metadata cache cleaned successfully and enabled repos"
+        - "{{ repos_status.stdout_lines }}"
