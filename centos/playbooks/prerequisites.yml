@@ -34,3 +34,6 @@
 
   - name: enable network service
     shell: systemctl enable network.service
+
+  - name: execute and set parameter runtime
+    shell: LC_CTYPE="en_US.UTF-8"

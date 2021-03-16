@@ -1,0 +1,8 @@
+---
+- name: get the information from k8s cluster
+  hosts: all
+#  vars_files:
+#      - vars/main.yml
+  tasks:
+  - import_role:
+     name: uninstall

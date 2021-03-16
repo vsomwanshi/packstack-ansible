@@ -1,0 +1,92 @@
+---
+---
+- name: execute and set the environment parameter
+  shell: LC_CTYPE="en_US.UTF-8"
+
+- name: get the kvm guest details
+  shell: virsh list --all | grep instance- | awk '{print $2}'
+  register: virsh_out
+
+- debug:
+    msg: "{{ virsh_out.stdout_lines }}"
+
+- name: execute and destory the vm guest
+  shell: |
+    virsh destroy "{{ item }}"
+    virsh undefine "{{ item }}"
+  loop: "{{ virsh_out.stdout_lines }}"
+
+- name: remove packages from server
+  shell: yum remove -y nrpe "*nagios*" puppet "*openstack*" "*nova*" "*keystone*" "*glance*" "*cinder*" "*swift*"
+  register: uninstall
+
+- debug:
+    msg: "{{ uninstall.stdout_lines }}"
+
+- name: remove db from mysql
+  shell: mysql -u root -e "drop database nova; drop database cinder; drop database keystone; drop database glance; drop database neutron;"
+  register: mysql
+
+- debug:
+    msg: "{{ mysql.stdout_lines }}"
+
+- name: losetup
+  shell: losetup -a | sed -e 's/:.*//g' | xargs losetup -d
+  register: losetup
+
+- debug:
+    msg: "{{ losetup.stdout_lines }}"
+
+- name: delete ssl_ps
+  shell: find /etc/pki/tls -name "ssl_ps*" | xargs rm -rf
+  register: ssl
+
+- debug:
+    msg: "{{ ssl.stdout_lines }}"
+
+- name: get the file system
+  shell: df | grep "/lib/" | sed -e 's/.* //g'
+  register: fs
+
+- debug:
+    msg: "{{ fs.stdout_lines }}"
+
+- name: unmount the fs
+  shell: umount "{{ item }}"
+  with_items:
+    - "{{ fs.stdout_lines }}"
+  register: fs_remove
+  when: fs.stdout != ""
+
+- debug:
+    msg: "{{ item }}"
+  with_items: "{{ fs_remove.results}}"
+  when: fs_remove.results != ""
+  
+- name: delete the bridges
+  shell: |
+    ovs-vsctl del-br br-ex
+    ovs-vsctl del-br br-tun
+    ovs-vsctl del-br br-int
+  register: bridge
+
+- debug:
+    msg: "{{ bridge.stdout_lines }}"
+
+- name: remove packages
+  shell: yum remove -y mysql mysql-server httpd "*memcache*" scsi-target-utils iscsi-initiator-utils perl-DBI perl-DBD-MySQL "*mariadb*" "*MySQL*" openvswitch
+  register: remove
+
+- debug:
+    msg: "{{ remove.stdout_lines }}"
+
+- name: remove file and filesystem
+  shell: |
+    rm -rf /etc/nagios  /etc/mysql /root/.my.cnf /etc/yum.repos.d/packstack_* /var/lib/cinder/ /var/lib/glance /var/lib/nova /etc/nova
+    rm -rf /srv/node/device*/*  /etc/rsync.d/frag* /var/lib/mysql/ /etc/swift
+    rm -rf /var/cache/swift /var/log/keystone /var/log/nova /var/log/neutron /var/log/cinder /var/log/glance
+    rm -rf /var/log/httpd /var/log/libvirt /var/log/mariadb /var/log/openvswitch /var/log/rabbitmq
+  register: del_file
+
+- debug:
+    msg: "{{ del_file.stdout_lines }}"
