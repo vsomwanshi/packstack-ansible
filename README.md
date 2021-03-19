@@ -34,7 +34,7 @@ Note: On CentOS, the extras repository provides the RPM that enables the OpenSta
 2. create vm as per your usecase like os flavour/family can  be RHEL or CentOS .
 3. when you open the git, you will see below 2 folders , you need to change directory according to your os family and perform below changes to perform deployment.
 
-4. Change the "ad_addr" in the env_variables file with the IP address of your created vm.
+4. Change the "ip_addr" in the env_variables file with the IP address of your created vm.
 
     cd redhat/         <<< change the folder according to usecase
     ls -lrt playbooks/
