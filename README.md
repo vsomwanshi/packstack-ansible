@@ -33,13 +33,28 @@ Note: On CentOS, the extras repository provides the RPM that enables the OpenSta
 ```      
 2. create vm as per your usecase like os flavour/family can  be RHEL or CentOS .
 3. when you open the git, you will see below 2 folders , you need to change directory according to your os family and perform below changes to perform deployment.
-
+```
+[root@ansible packstack-ansible]# ls -lrt
+total 4
+-rw-r--r-- 1 root root 3166 Mar 15 01:49 README.md
+drwxr-xr-x 3 root root   86 Mar 17 11:04 redhat
+drwxr-xr-x 3 root root   86 Mar 17 11:05 centos
+drwxr-xr-x 3 root root   75 Mar 17 11:05 uninstall
+[root@ansible packstack-ansible]# 
+```
 4. Change the "ip_addr" in the env_variables file with the IP address of your created vm.
 ```
-    cd redhat/         <<< change the folder according to usecase
-    ls -lrt playbooks/
-    vi playbooks/env_variables
-    ip_addr: 10.20.30.40
+[root@fyreansible packstack-ansible]# cd redhat/	### folder may vary according to OS family e.g. redhat / centos
+[root@fyreansible redhat]# ls -lrt
+total 12
+-rw-r--r-- 1 root root 198 Mar 15 01:49 setup_packstack.yml
+-rw-r--r-- 1 root root 210 Mar 15 01:49 ansible.cfg
+drwxr-xr-x 2 root root 132 Mar 16 02:13 playbooks
+-rw-r--r-- 1 root root  65 Mar 17 11:04 inventory
+[root@fyreansible redhat]# ls -lrt playbooks/env_variables 
+-rw-r--r-- 1 root root 21 Mar 15 01:49 playbooks/env_variables
+[root@fyreansible redhat]# 
+
 ``` 
 5. provide your vm ip in inventory file along with your user and password in below format. Note: Below is just a sample IP, may be vary. 
 ```
