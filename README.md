@@ -32,7 +32,7 @@ Note: On CentOS, the extras repository provides the RPM that enables the OpenSta
    git@github.com:vsomwanshi/packstack-ansible.git
 ```      
 2. create vm as per your usecase like os flavour/family can  be RHEL or CentOS .
-3. when you open the git, you will see below 2 folders , you need to change directory according to your os family and perform below changes to perform deployment.
+3. once the repo is pulled, you will find below folders e.g redhat/centos/uninstall, you need to access directory according to your os family and perform below changes to perform deployment.
 ```
 [root@ansible packstack-ansible]# ls -lrt
 total 4
