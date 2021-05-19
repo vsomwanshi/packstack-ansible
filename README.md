@@ -29,7 +29,7 @@ Note: On CentOS, the extras repository provides the RPM that enables the OpenSta
 
 1. Clone repository with below command on your ansible server.
 ```
-   git clone < repository_name > 
+   git@github.com:vsomwanshi/packstack-ansible.git
 ```      
 2. create vm as per your usecase like os flavour/family can  be RHEL or CentOS .
 3. when you open the git, you will see below 2 folders , you need to change directory according to your os family and perform below changes to perform deployment.
